@@ -27,15 +27,11 @@ public class GoblinCharger : MonoBehaviour, IEnemy
         ChangeAgent(true); // Turn agent on
         Vector3 targetPos = GetTargetPosition();
         ChangeAgent(false);
-        Debug.Log(targetPos);
         if (targetPos != Vector3.zero)
         {
-            Debug.Log(targetPos);
-            targetPos.y = .5f;
-            transform.position = targetPos;
-            
+            StartCoroutine(WaitForMovement(targetPos));
         }
-        EndTurn();
+
     }
     private void EndTurn()
     {
@@ -58,7 +54,7 @@ public class GoblinCharger : MonoBehaviour, IEnemy
         float meleeDistance = 1f + BCI.BaseSize + target.GetComponent<BaseCharacterInfo>().BaseSize;
         if (closestDistance <= BCI.MoveDistance + BCI.ChargeDistance && closestDistance! > meleeDistance) // If closesr than charge distance and is not within melee then go to melee
         {
-            moveDistance = closestDistance - meleeDistance;
+            moveDistance = closestDistance;
             closeEnough = true;
         }
         else if (closestDistance >= BCI.MoveDistance) // if the target is farther than we can walk then go full distance
@@ -70,20 +66,59 @@ public class GoblinCharger : MonoBehaviour, IEnemy
         Vector3 enemyDirection = target.transform.position - transform.position;
         enemyDirection.Normalize();
         Vector3 movePosition = (transform.position + (moveDistance * enemyDirection));
-        if (movePosition == transform.position)
+        Debug.Log(movePosition + " " + transform.position);
+        if (Vector3.Distance(transform.position, movePosition) <= .1f)
         {
-            Debug.Log("Ear");
             return Vector3.zero;
         }
         NavMeshHit hit;
         NavMesh.SamplePosition(movePosition, out hit, moveDistance, 1);
-        Vector3 finalPosition = hit.position;
-        return finalPosition;
+        agent.SetDestination(hit.position);
+        //Check if close enough
+        if (Vector3.Distance(agent.destination, target.transform.position) <= meleeDistance)
+        {
+            closeEnough = true;
+        }
+        else
+            closeEnough = false;
+        return agent.destination;
     }
     private void ChangeAgent(bool agentOn)
     {
         agent.enabled = agentOn;
         agentObs.enabled = !agentOn;
+    }
+    private void Smack()
+    {
+        MeleeManager.instance.RollDice(BCI, target.GetComponent<BaseCharacterInfo>());
+    }
+    public IEnumerator WaitForMovement(Vector3 targetPos)
+    {
+        GetComponent<Rigidbody>().useGravity = false;
+        GetComponent<Collider>().isTrigger = true;
+        float debugTime = 7f;
+        Debug.Log("Started Moving");
+        yield return new WaitForEndOfFrame();
+        while ((Vector3.Distance(transform.position, targetPos) > .1f))
+        {
+            yield return new WaitForEndOfFrame();
+            debugTime -= Time.deltaTime;
+            if (debugTime <= 0)
+                break;
+            Vector3 moveDir = targetPos - transform.position;
+            moveDir = moveDir.normalized;
+            transform.Translate(moveDir * 4f * Time.deltaTime);
+        }
+        GetComponent<Rigidbody>().useGravity = true;
+        GetComponent<Collider>().isTrigger = false;
+        Debug.Log("Done Moving");
+        float meleeDistance = 1f + BCI.BaseSize + target.GetComponent<BaseCharacterInfo>().BaseSize;
+        if (Vector3.Distance(transform.position, target.transform.position) <= meleeDistance)
+        {
+            Smack();
+        }
+
+        EndTurn();
     }
 
     public void Init()

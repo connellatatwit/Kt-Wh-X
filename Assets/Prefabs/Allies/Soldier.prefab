@@ -1230,6 +1230,7 @@ GameObject:
   - component: {fileID: 869633589621066156}
   - component: {fileID: 869633589621066159}
   - component: {fileID: 869633589621066158}
+  - component: {fileID: -8332443490578995511}
   m_Layer: 11
   m_Name: Soldier
   m_TagString: Ally
@@ -1464,6 +1465,22 @@ MonoBehaviour:
   unitMask2:
     serializedVersion: 2
     m_Bits: 1024
+--- !u!208 &-8332443490578995511
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 869633589621066151}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 0.5, y: 0.5, z: 0.5}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0.5, z: 0}
+  m_TimeToStationary: 0.1
 --- !u!1 &869633589642973121
 GameObject:
   m_ObjectHideFlags: 0

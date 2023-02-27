@@ -365,6 +365,7 @@ GameObject:
   - component: {fileID: 2513085661816150907}
   - component: {fileID: 2513085661816150905}
   - component: {fileID: 362354884822666084}
+  - component: {fileID: 6119273083130102393}
   m_Layer: 11
   m_Name: Healer
   m_TagString: Ally
@@ -563,6 +564,22 @@ MonoBehaviour:
   unitMask2:
     serializedVersion: 2
     m_Bits: 1024
+--- !u!208 &6119273083130102393
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2513085661816150897}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 0.5, y: 0.5, z: 0.5}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0.5, z: 0}
+  m_TimeToStationary: 0.1
 --- !u!1 &2513085661835926807
 GameObject:
   m_ObjectHideFlags: 0
