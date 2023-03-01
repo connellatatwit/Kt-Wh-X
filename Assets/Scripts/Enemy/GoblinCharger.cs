@@ -12,7 +12,7 @@ public class GoblinCharger : MonoBehaviour, IEnemy
     public NavMeshAgent agent;
     public NavMeshObstacle agentObs;
     bool closeEnough = false;
-
+    private Collider collider;
     BaseCharacterInfo IEnemy.BCI => BCI;
 
     private void Start()
@@ -20,6 +20,7 @@ public class GoblinCharger : MonoBehaviour, IEnemy
         BCI = GetComponent<BaseCharacterInfo>();
         agent = GetComponent<NavMeshAgent>();
         agentObs = GetComponent<NavMeshObstacle>();
+        collider = GetComponent<Collider>();
         ChangeAgent(false);
     }
     public void DoTurn()
@@ -31,10 +32,12 @@ public class GoblinCharger : MonoBehaviour, IEnemy
         {
             StartCoroutine(WaitForMovement(targetPos));
         }
-
+        else
+            Smack();
     }
     private void EndTurn()
     {
+        GetComponent<Rigidbody>().velocity = Vector3.zero;
         BCI.SpendAp(2);
         GameManager.instance.EnemyTurnDone();
     }
@@ -74,25 +77,29 @@ public class GoblinCharger : MonoBehaviour, IEnemy
         NavMeshHit hit;
         NavMesh.SamplePosition(movePosition, out hit, moveDistance, 1);
         agent.SetDestination(hit.position);
-        //Check if close enough
-        if (Vector3.Distance(agent.destination, target.transform.position) <= meleeDistance)
-        {
-            closeEnough = true;
-        }
-        else
-            closeEnough = false;
+        
         return agent.destination;
     }
     private void ChangeAgent(bool agentOn)
     {
+        collider.isTrigger = agentOn;
         agent.enabled = agentOn;
         agentObs.enabled = !agentOn;
     }
     private void Smack()
     {
         MeleeManager.instance.RollDice(BCI, target.GetComponent<BaseCharacterInfo>());
+        StartCoroutine(WaitForDice());
     }
-    public IEnumerator WaitForMovement(Vector3 targetPos)
+    private IEnumerator WaitForDice()
+    {
+        yield return new WaitForSeconds(1f);
+        yield return new WaitUntil(() => MeleeManager.instance.FightStillGoing);
+        Debug.Log("Dice Done");
+        yield return new WaitForSeconds(2.5f);
+        EndTurn();
+    }
+        public IEnumerator WaitForMovement(Vector3 targetPos)
     {
         GetComponent<Rigidbody>().useGravity = false;
         GetComponent<Collider>().isTrigger = true;
@@ -112,13 +119,13 @@ public class GoblinCharger : MonoBehaviour, IEnemy
         GetComponent<Rigidbody>().useGravity = true;
         GetComponent<Collider>().isTrigger = false;
         Debug.Log("Done Moving");
-        float meleeDistance = 1f + BCI.BaseSize + target.GetComponent<BaseCharacterInfo>().BaseSize;
+        float meleeDistance = 2f + BCI.BaseSize + target.GetComponent<BaseCharacterInfo>().BaseSize;
         if (Vector3.Distance(transform.position, target.transform.position) <= meleeDistance)
         {
             Smack();
         }
-
-        EndTurn();
+        else
+            EndTurn();
     }
 
     public void Init()

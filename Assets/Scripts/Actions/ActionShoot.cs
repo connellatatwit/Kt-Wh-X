@@ -79,7 +79,7 @@ public class ActionShoot : MonoBehaviour, IActions
     {
         yield return new WaitUntil(() => ShootManager.instance.FightStillGoing);
 
-        yield return new WaitForSeconds(2.5f);
+        yield return new WaitForSeconds(3f);
         GameManager.instance.CheckIfUnitDone();
     }
 

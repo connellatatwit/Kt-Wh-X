@@ -11,6 +11,7 @@ public class BaseCharacterInfo : MonoBehaviour
     [SerializeField] List<Transform> bodyParts;
     [SerializeField] GameObject targetAbleObject;
     [SerializeField] float baseSize;
+    [SerializeField] public float height = 2f; // 1 block is 1 height. Allows for things like how high to lift it.
 
     [Header("Unity Stuff")]
     [SerializeField] TextMeshProUGUI apText;

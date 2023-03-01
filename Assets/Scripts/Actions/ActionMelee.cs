@@ -5,7 +5,6 @@ using UnityEngine;
 public class ActionMelee : MonoBehaviour, IActions
 {
     [SerializeField] Transform basePosition;
-    [SerializeField] float baseSizeOffset;
     private bool doingMelee = false;
     private BaseCharacterInfo BCI;
 
@@ -96,7 +95,7 @@ public class ActionMelee : MonoBehaviour, IActions
         {
             if (Physics.Raycast(ray, out hit, 1000f)) // Center of model
             {
-                if (Vector3.Distance(hit.point, enemy.transform.position) < (1f + baseSizeOffset + enemy.GetComponent<BaseCharacterInfo>().BaseSize))
+                if (Vector3.Distance(hit.point, enemy.transform.position) < (2.1f + BCI.BaseSize + enemy.GetComponent<BaseCharacterInfo>().BaseSize))
                 {
                     closeEnough = true;
                     possibleTargets.Add(enemy);

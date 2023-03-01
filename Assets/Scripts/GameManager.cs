@@ -27,6 +27,8 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] StatManager sM;
 
+    [SerializeField] VirtualCamMove cameraSystem;
+
     [Header("Test Set Enemies and Allies")]
     [SerializeField] List<GameObject> PresetTestEnemies;
     [SerializeField] List<IEnemy> enemies = new List<IEnemy>();
@@ -151,8 +153,7 @@ public class GameManager : MonoBehaviour
         // Check if allies are done
         if (CheckAlliesActive()) // An ally is ready
         {
-            state = GameState.PlayerTurn;
-            turnImage.color = Color.green;
+            AllyTurn();
         }
         else if (CheckEnemiesActive())
         { // no ally is ready but an enemy is, then do an overworked shot or pass or heal
@@ -180,10 +181,7 @@ public class GameManager : MonoBehaviour
             else if (CheckAlliesActive()) // if no enemy is ready and an ally is ready then an enemy does an Overworked shot; FOR NOW IT JUST GOES TO PLAYER TURN
             {
                 //TEMP -----
-                state = GameState.PlayerTurn;
-                Debug.Log("Current untit is " + selectedUnit.name);
-                turnImage.color = Color.green;
-                ClearUnitPanel();
+                AllyTurn();
                 //TEMP -----
             }
             else // No one is ready
@@ -236,17 +234,25 @@ public class GameManager : MonoBehaviour
         {
             if (enemy.BCI.CheckReady())
             {
+                cameraSystem.SetTarget(enemy.transform);
+                cameraSystem.SetState(CamState.FollowEnemy);
                 enemy.DoTurn();
                 break;
             }
         }
     }
+    private void AllyTurn()
+    {
+        cameraSystem.SetState(CamState.Free);
+        state = GameState.PlayerTurn;
+        turnImage.color = Color.green;
+        ClearUnitPanel();
+    }
     private void NextRound()
     {
         Debug.Log("Round Done");
         // Temp -----
-        turnImage.color = Color.green;
-        state = GameState.PlayerTurn;
+        AllyTurn();
         // Temp-----
         InitEnemies();
         InitAllies();
@@ -278,5 +284,9 @@ public class GameManager : MonoBehaviour
     public GameState GetState()
     {
         return state;
+    }
+    public BaseCharacterInfo GetCurrentCharacter()
+    {
+        return selectedUnit.GetComponent<BaseCharacterInfo>();
     }
 }

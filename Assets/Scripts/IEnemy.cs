@@ -6,6 +6,7 @@ public interface IEnemy
 {
     public void DoTurn();
     public void Init();
+    Transform transform { get; }
 
     public BaseCharacterInfo BCI
     {

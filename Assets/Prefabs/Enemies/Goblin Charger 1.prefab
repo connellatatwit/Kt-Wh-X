@@ -728,9 +728,9 @@ GameObject:
   - component: {fileID: 2164450543985214440}
   - component: {fileID: 2164450543985214444}
   - component: {fileID: 2164450543985214445}
-  - component: {fileID: 8999665373827340306}
   - component: {fileID: 3074886836063425741}
   - component: {fileID: -3194021860725647664}
+  - component: {fileID: 3214724994815668146}
   m_Layer: 11
   m_Name: Goblin Charger 1
   m_TagString: Enemy
@@ -878,21 +878,6 @@ MonoBehaviour:
   minusMSCanvas: {fileID: 2164450544402589068}
   msCanvasText: {fileID: 2164450544669704665}
   basePosition: {fileID: 2164450542744344304}
---- !u!114 &8999665373827340306
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2164450543985214231}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 79f3b0e579334b6429d9f59d2afa504b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  target: {fileID: 0}
-  agent: {fileID: 0}
-  agentObs: {fileID: 0}
 --- !u!195 &3074886836063425741
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -931,6 +916,21 @@ NavMeshObstacle:
   m_CarveOnlyStationary: 1
   m_Center: {x: 0, y: 0.5, z: 0}
   m_TimeToStationary: 0.1
+--- !u!114 &3214724994815668146
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2164450543985214231}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7d0a1aad4998314e901eb2a555d8efd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target: {fileID: 0}
+  agent: {fileID: 3074886836063425741}
+  agentObs: {fileID: -3194021860725647664}
 --- !u!1 &2164450544028371409
 GameObject:
   m_ObjectHideFlags: 0

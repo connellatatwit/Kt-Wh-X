@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
 
+public enum CamState
+{
+    Free,
+    FollowEnemy
+}
 public class VirtualCamMove : MonoBehaviour
 {
     [SerializeField] CinemachineVirtualCamera CMVC;
@@ -16,6 +21,9 @@ public class VirtualCamMove : MonoBehaviour
 
     private Vector3 followOffset;
 
+    private CamState state;
+    private Transform targetEnemy;
+
     private void Awake()
     {
         followOffset = CMVC.GetCinemachineComponent<CinemachineTransposer>().m_FollowOffset;
@@ -24,43 +32,68 @@ public class VirtualCamMove : MonoBehaviour
 
     private void Update()
     {
-        Vector3 iputDir = new Vector3(0, 0, 0);
-
-        if (Input.GetKey(KeyCode.W)) iputDir.z = +1f;
-        if (Input.GetKey(KeyCode.S)) iputDir.z = -1f;
-        if (Input.GetKey(KeyCode.A)) iputDir.x = -1f;
-        if (Input.GetKey(KeyCode.D)) iputDir.x = +1f;
-        if (Input.GetMouseButtonDown(1))
+        if (state == CamState.Free)
         {
-            dragPanMoveActive = true;
-            lastMousePos = Input.mousePosition;
+            Vector3 iputDir = new Vector3(0, 0, 0);
+
+            if (Input.GetKey(KeyCode.W)) iputDir.z = +1f;
+            if (Input.GetKey(KeyCode.S)) iputDir.z = -1f;
+            if (Input.GetKey(KeyCode.A)) iputDir.x = -1f;
+            if (Input.GetKey(KeyCode.D)) iputDir.x = +1f;
+            if (Input.GetMouseButtonDown(1))
+            {
+                dragPanMoveActive = true;
+                lastMousePos = Input.mousePosition;
+            }
+            if (Input.GetMouseButtonUp(1))
+            {
+                dragPanMoveActive = false;
+            }
+            if (dragPanMoveActive)
+            {
+                Vector2 mouseMoveDelt = (Vector2)Input.mousePosition - lastMousePos;
+                float dragPanSpeed = 1f;
+                iputDir.x = -mouseMoveDelt.x * dragPanSpeed;
+                iputDir.z = -mouseMoveDelt.y * dragPanSpeed;
+
+                lastMousePos = Input.mousePosition;
+            }
+
+            Vector3 moveDir = transform.forward * iputDir.z + transform.right * iputDir.x;
+            transform.position += moveDir * speed * Time.deltaTime;
+
+
+
+            float rotDir = 0f;
+            if (Input.GetKey(KeyCode.Q)) rotDir += 1f;
+            if (Input.GetKey(KeyCode.E)) rotDir -= 1f;
+
+            transform.eulerAngles += new Vector3(0, rotDir * rotateSpeed * Time.deltaTime, 0);
+
+            HandleCamZoom();
         }
-        if (Input.GetMouseButtonUp(1))
+        else if(state == CamState.FollowEnemy)
         {
-            dragPanMoveActive = false;
+            if(targetEnemy != null)
+            {
+                transform.position = targetEnemy.position;
+
+                float rotDir = 0f;
+                if (Input.GetKey(KeyCode.Q)) rotDir += 1f;
+                if (Input.GetKey(KeyCode.E)) rotDir -= 1f;
+
+                transform.eulerAngles += new Vector3(0, rotDir * rotateSpeed * Time.deltaTime, 0);
+            }
         }
-        if (dragPanMoveActive)
-        {
-            Vector2 mouseMoveDelt = (Vector2)Input.mousePosition - lastMousePos;
-            float dragPanSpeed = 1f;
-            iputDir.x = -mouseMoveDelt.x * dragPanSpeed;
-            iputDir.z = -mouseMoveDelt.y * dragPanSpeed;
+    }
 
-            lastMousePos = Input.mousePosition;
-        }
-
-        Vector3 moveDir = transform.forward * iputDir.z + transform.right * iputDir.x;
-        transform.position += moveDir * speed * Time.deltaTime;
-
-
-
-        float rotDir = 0f;
-        if (Input.GetKey(KeyCode.Q)) rotDir += 1f;
-        if (Input.GetKey(KeyCode.E)) rotDir -= 1f;
-
-        transform.eulerAngles += new Vector3(0, rotDir * rotateSpeed * Time.deltaTime, 0);
-
-        HandleCamZoom();
+    public void SetState(CamState state)
+    {
+        this.state = state;
+    }
+    public void SetTarget(Transform targetEnemy)
+    {
+        this.targetEnemy = targetEnemy;
     }
 
     private void HandleCamZoom()

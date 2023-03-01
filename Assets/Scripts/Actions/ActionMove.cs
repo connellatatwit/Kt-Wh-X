@@ -66,6 +66,7 @@ public class ActionMove : MonoBehaviour, IActions
         if (doingActionMove)
         {
             rb.MovePosition(position);
+            upDistance = GameManager.instance.GetCurrentCharacter().height;
         }
     }
     private void Update()

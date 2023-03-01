@@ -100,11 +100,13 @@ public class ShootManager : MonoBehaviour
         int NormHits = hits - blocks;
         if (critBlocks > 0)
             NormHits -= extraCritBlocks;
+        /*
         Debug.Log("Amount of blocks are... " + blocks + " " + defender.name);
         Debug.Log("Amount of Crit Blocks are... " + critBlocks + " " + defender.name);
         Debug.Log("-------" + " " + defender.name);
         Debug.Log("Amount of Hits are... " + hits + " " + defender.name);
         Debug.Log("Amount of Critical hits are..." + critHits + " " + defender.name);
+        */
         if (inCover)
         {
             NormHits--;
@@ -112,11 +114,12 @@ public class ShootManager : MonoBehaviour
         }
         NormHits = Mathf.Clamp(NormHits, 0, 10000);
         CritHits = Mathf.Clamp(CritHits, 0, 10000);
-
+        /*
         Debug.Log("NET----------------" + " " + defender.name);
         Debug.Log("NormHits... " + NormHits + " " + defender.name);
         Debug.Log("CritHits... " + CritHits + " " + defender.name);
         Debug.Log("HERE IT IS FOLKS END ----------------------- " + defender.name + " 2");
+        */
 
         DoDamage(NormHits, CritHits);
 

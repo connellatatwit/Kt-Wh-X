@@ -56,7 +56,7 @@ public class Dice : MonoBehaviour
         //Debug.Log("Velocity is " + rb.velocity.magnitude);
         if (state == DiceState.Rolling)
         {
-            if (rb.velocity.magnitude <= 0)
+            if (rb.velocity.magnitude <= .1)
             {
                 int currentSide = 0;
                 float highestSide = sides[0].position.y;

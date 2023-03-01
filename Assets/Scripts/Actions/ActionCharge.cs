@@ -178,7 +178,7 @@ public class ActionCharge : MonoBehaviour, IActions
         {
             if (Physics.Raycast(rays[4], out hit, 1000f)) // Center of model
             {
-                if (Vector3.Distance(hit.point, enemy.transform.position) < (1f + BCI.BaseSize + enemy.GetComponent<BaseCharacterInfo>().BaseSize))
+                if (Vector3.Distance(hit.point, enemy.transform.position) < (2f + BCI.BaseSize + enemy.GetComponent<BaseCharacterInfo>().BaseSize))
                 {
                     enemyCloseEnough = true;
                     break;
