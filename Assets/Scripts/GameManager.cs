@@ -7,6 +7,8 @@ using UnityEngine.UI;
 public enum GameState
 {
     Busy,
+    PlayerSettingUnits,
+    SettingUnit,
     Waiting,
     PlayerTurn,
     SelectedUnit,
@@ -29,6 +31,13 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] VirtualCamMove cameraSystem;
 
+    [Header("Initial Set up Stuff")]
+    [SerializeField] Transform unitButtonParent;
+    [SerializeField] GameObject unitButtonPrefab;
+    [SerializeField] List<UnitButton> unitButtons;
+    private LayerMask floorMask = (1 << 14);
+    [SerializeField] World world;
+
     [Header("Test Set Enemies and Allies")]
     [SerializeField] List<GameObject> PresetTestEnemies;
     [SerializeField] List<IEnemy> enemies = new List<IEnemy>();
@@ -40,7 +49,7 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        if(instance != null)
+        if (instance != null)
         {
             Debug.Log("2 GM's --");
             return;
@@ -51,7 +60,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        state = GameState.PlayerTurn;
+        state = GameState.PlayerSettingUnits;
         enemeisDone = false;
         alliesDone = false;
         turnImage.color = Color.green;
@@ -62,6 +71,10 @@ public class GameManager : MonoBehaviour
         {
             enemies.Add(PresetTestEnemies[i].GetComponent<IEnemy>());
         }
+
+        //TEMP:
+
+        InitUnitButtons();
     }
 
     private void Update()
@@ -104,12 +117,73 @@ public class GameManager : MonoBehaviour
                 ClearUnitPanel();
             }
         }
-        else if(state == GameState.SelectedUnit)
+        else if (state == GameState.SettingUnit)
         {
+            // Allow player to set up units... 
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
 
+            if (Physics.Raycast(ray, out hit, 1000, floorMask))
+            {
+                Vector3 mousePosition = hit.point;
+                mousePosition = new Vector3(mousePosition.x, mousePosition.y, mousePosition.z);
+
+                Vector3 tempPos;
+
+                var allowedPos = mousePosition - world.center.position;
+                Debug.Log(allowedPos);
+                allowedPos = Vector3.ClampMagnitude(allowedPos, world.spawnArea.x); // Calculates circle
+                tempPos = world.center.position + allowedPos;
+                tempPos = new Vector3(tempPos.x, tempPos.y + 2f, tempPos.z);
+                Debug.Log(tempPos);
+                selectedUnit.transform.position = Vector3.Lerp(selectedUnit.transform.position, tempPos, 3f * Time.deltaTime);
+            }
+            if (Input.GetMouseButtonDown(0))
+            {
+                MakeSelectedUnitMovable(false);
+                Debug.Log("here");
+                selectedUnit = null;
+                if (CheckIfAnyButtonsLeft())
+                {
+                    state = GameState.PlayerSettingUnits;
+                }
+                else
+                    state = GameState.PlayerTurn;
+            }
         }
     }
-
+    private void InitUnitButtons()
+    {
+        for (int i = 0; i < allies.Count; i++)
+        {
+            GameObject temp = Instantiate(unitButtonPrefab, unitButtonParent);
+            unitButtons.Add(temp.GetComponent<UnitButton>());
+        }
+        for (int i = 0; i < unitButtons.Count; i++)
+        {
+            unitButtons[i].SetTargetUnit(allies[i].transform);
+        }
+    }
+    public void StartSettingUnit(GameObject targetObject)
+    {
+        selectedUnit = targetObject.gameObject;
+        MakeSelectedUnitMovable(true);
+        selectedUnit.transform.position = world.center.position;
+    }
+    private void MakeSelectedUnitMovable(bool yes)
+    {
+        state = GameState.SettingUnit;
+        selectedUnit.GetComponent<Collider>().isTrigger = yes;
+        selectedUnit.GetComponent<Rigidbody>().useGravity = !yes; // Remove Gravity for ease of moving
+        selectedUnit.GetComponent<Rigidbody>().velocity = Vector3.zero;
+    }
+    private bool CheckIfAnyButtonsLeft()
+    {
+        if (unitButtonParent.childCount > 0)
+            return true;
+        else
+            return false;
+    }
     private void InitUnitPanel()
     {
         sM.SetInformation(selectedUnit.GetComponent<BaseCharacterInfo>());
