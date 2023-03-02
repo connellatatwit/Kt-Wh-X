@@ -23,6 +23,8 @@ public class ShootManager : MonoBehaviour
     [SerializeField] Vector3 throwLeft;
     [SerializeField] Vector3 throwRight;
 
+    [SerializeField] CombatText textController;
+
     private BaseCharacterInfo attacker;
     private BaseCharacterInfo defender;
     private bool inCover;
@@ -68,7 +70,6 @@ public class ShootManager : MonoBehaviour
         int critHits = 0;
         int blocks = 0;
         int critBlocks = 0;
-        Debug.Log("HERE IT IS FOLKS BEGINNING ----------------------- " + defender.name);
         foreach (Dice dice in launchedDefendDice)
         {
             if (dice.GetSide() >= defender.Equipment.armour.SaveChance)
@@ -120,6 +121,7 @@ public class ShootManager : MonoBehaviour
         Debug.Log("CritHits... " + CritHits + " " + defender.name);
         Debug.Log("HERE IT IS FOLKS END ----------------------- " + defender.name + " 2");
         */
+        textController.RangedAttack(hits, critHits, blocks, critBlocks, 0);
 
         DoDamage(NormHits, CritHits);
 
@@ -129,6 +131,7 @@ public class ShootManager : MonoBehaviour
     public void RollDice(BaseCharacterInfo attacker, BaseCharacterInfo defender, bool inCover)
     {
         diceBox.SetActive(true);
+        textController.ResetRangedText(true);
 
         int attackerDiceAmount = attacker.Equipment.rangedWeapon.DiceAmount + attacker.RangedDice;
         int defenderDiceAmount = defender.Equipment.armour.DefenceDice + defender.DefenceDice;
@@ -177,6 +180,7 @@ public class ShootManager : MonoBehaviour
         }
         diceBox.SetActive(false);
         launchedDice.Clear();
+        textController.ResetRangedText(false);
     }
 
     private void DoDamage(int hits, int critHits)

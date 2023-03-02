@@ -15,6 +15,8 @@ public class MeleeManager : MonoBehaviour
 
     [SerializeField] Vector3 throwRight;
 
+    [SerializeField] CombatText combatText;
+
     private bool fightStarted;
     private BaseCharacterInfo defender;
     private BaseCharacterInfo attacker;
@@ -61,15 +63,19 @@ public class MeleeManager : MonoBehaviour
     {
         fightStarted = false;
         int dmg = 0;
+        int normHits = 0;
+        int critHits = 0;
         foreach (Dice dice in launchedDice)
         {
             if(dice.GetSide() >= attacker.Equipment.meleeWeapon.CritChance) // Do higher Damage
             {
                 dmg += attacker.Equipment.meleeWeapon.CritDamage;
+                normHits++;
             }
             else
             {
                 dmg += attacker.Equipment.meleeWeapon.Damage;
+                critHits++;
             }
         }
         int blockedDmg = defender.Equipment.armour.MeleeDefense;
@@ -77,6 +83,7 @@ public class MeleeManager : MonoBehaviour
         dmg -= blockedDmg;
         dmg = Mathf.Clamp(dmg, 0, 1000);
         Debug.Log("Melee did... " + dmg);
+        combatText.MeleeAttack(normHits * attacker.Equipment.meleeWeapon.Damage, critHits * attacker.Equipment.rangedWeapon.CritDamage, defender.Equipment.armour.MeleeDefense, dmg);
 
         // Do the Damage
         defender.TakeDamage(dmg);
@@ -86,6 +93,7 @@ public class MeleeManager : MonoBehaviour
 
     public void RollDice(BaseCharacterInfo attacker, BaseCharacterInfo defender)
     {
+        combatText.ResetMeleeText(true);
         diceBox.SetActive(true);
         this.attacker = attacker;
         this.defender = defender;
@@ -102,7 +110,7 @@ public class MeleeManager : MonoBehaviour
             newDice.GetComponent<Rigidbody>().velocity = throwDir;
             newDice.transform.parent = camObject;
         }
-
+        combatText.MeleeAttack(0, 0, defender.Equipment.armour.MeleeDefense, 0);
         fightStarted = true;
     }
 
