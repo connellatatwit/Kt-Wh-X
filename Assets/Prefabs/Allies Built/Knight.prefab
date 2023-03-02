@@ -1765,7 +1765,7 @@ MonoBehaviour:
   apText: {fileID: 4135554030709856034}
   hpText: {fileID: 4135554030747970788}
   hpBar: {fileID: 4135554030097666393}
-  maxHealth: 10
+  maxHealth: 12
   maxAp: 2
   baseMoveDistance: 7
   baseChargeDistance: 2
@@ -1777,12 +1777,12 @@ MonoBehaviour:
   addedDefDice: 0
   equipment:
     armour:
-      defDice: 2
-      saveChance: 5
-      meleeDefense: 0
+      defDice: 3
+      saveChance: 4
+      meleeDefense: 2
     meleeWeapon:
-      damage: 1
-      critDamage: 2
+      damage: 2
+      critDamage: 3
       diceAmount: 3
       critChance: 5
     rangedWeapon:

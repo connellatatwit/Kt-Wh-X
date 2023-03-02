@@ -10897,6 +10897,7 @@ GameObject:
   - component: {fileID: 7833539991353562815}
   - component: {fileID: 7833539991353562810}
   - component: {fileID: 2522903190828975376}
+  - component: {fileID: 1804655647239669347}
   - component: {fileID: 7833539991353562809}
   - component: {fileID: 7833539991353562808}
   - component: {fileID: 7833539991353562811}
@@ -11002,7 +11003,7 @@ MonoBehaviour:
   apText: {fileID: 7833539991434672917}
   hpText: {fileID: 7833539991354998995}
   hpBar: {fileID: 7833539990973513070}
-  maxHealth: 10
+  maxHealth: 9
   maxAp: 2
   baseMoveDistance: 7
   baseChargeDistance: 2
@@ -11014,14 +11015,14 @@ MonoBehaviour:
   addedDefDice: 0
   equipment:
     armour:
-      defDice: 2
-      saveChance: 5
-      meleeDefense: 0
+      defDice: 3
+      saveChance: 4
+      meleeDefense: 1
     meleeWeapon:
-      damage: 1
-      critDamage: 2
-      diceAmount: 3
-      critChance: 5
+      damage: 3
+      critDamage: 4
+      diceAmount: 1
+      critChance: 6
     rangedWeapon:
       damage: 1
       critDamage: 2
@@ -11076,6 +11077,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 348576554e5d7fa4b8f91e388e7c3bbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  possibleTargets: []
+  unitMask:
+    serializedVersion: 2
+    m_Bits: 2048
+  unitMask2:
+    serializedVersion: 2
+    m_Bits: 1024
+--- !u!114 &1804655647239669347
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7833539991353562802}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9cfa140f33b3da439cc7fe3e1eb1e71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  healAmount: 2
   possibleTargets: []
   unitMask:
     serializedVersion: 2
